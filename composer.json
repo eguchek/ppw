@@ -1,0 +1,16 @@
+{
+    "name": "eguchek/ppw",
+    "description": "Praha Pleasant Walk project",
+    "authors": [
+        {
+            "name": "Eugeny Guchek",
+            "email": "mailbox@guki.org"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "PPW\\": "classes"
+        }
+    }
+}
