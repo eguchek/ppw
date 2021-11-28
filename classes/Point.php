@@ -15,8 +15,8 @@ class Point
 
     public static function fromInput($coordinates): Point
     {
-        list($lon, $lat) = explode(',', $coordinates);
-        return new self($lat, $lon);
+        list($lat, $lon) = explode(',', $coordinates);
+        return new self(trim($lat), trim($lon));
     }
 
 }
