@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Praha Pleasant Walk</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+<div id="map" style="width: 1024px; height: 768px;"></div>
+<script>
+
+    var mymap = L.map('map').setView([50.079106479540954, 14.454002968854777], 15);
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+        maxZoom: 18,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1
+    }).addTo(mymap);
+    /*
+
+                L.marker([50.079206479540954, 14.456002968854777]).addTo(mymap)
+                    .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+                L.circle([50.079106579540954, 14.454003968854777], 500, {
+                    color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.5
+                }).addTo(mymap).bindPopup("I am a circle.");
+
+                L.polygon([
+                    [50.079406479540954, 14.455002968854777],
+                    [50.079706479540954, 14.454402968854777],
+                    [50.079107479540954, 14.454004968854777]
+                ]).addTo(mymap).bindPopup("I am a polygon.");
+    */
+
+    var popup = L.popup();
+    var markers = [];
+
+    function onMapClick(e) {
+
+        let url = '/api/?from='+ e.latlng.lat + '&to=' + e.latlng.lng;
+
+        $.ajax({
+            url: url,
+        }).done(function(data) {
+
+            $.each(markers, function(key, marker) {
+                mymap.removeLayer(marker)
+            });
+
+            $.each(data, function(key, item) {
+                markers.push(L.marker([item.lat, item.lon]).addTo(mymap)
+                    .bindPopup("<b>Mode</b><br />" + item.mode).openPopup());
+            });
+
+            //var marker = L.marker([item.latitude, item.longitude]);
+            //marker.bindPopup("<b>Elevation</b><br />" + item.elevation);
+            //markers.addLayer(marker);
+        });
+    }
+
+
+    mymap.on('click', onMapClick);
+
+</script>
+</body>
+</html>
